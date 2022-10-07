@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { caseModel, setData } from "../../../models/caseModel";
-import tokenService from "../../../services/tokenService";
 import { createCase } from "../../../services/zohoService";
 
 export default async function handler(
@@ -13,8 +12,7 @@ export default async function handler(
 
   var data = setData(req.body);
   caseModel.data = [data];
-  var token = await tokenService();
-  var newCase = await createCase(caseModel, token);
+  var newCase = await createCase(caseModel);
 
   res.status(200).json(newCase);
 }

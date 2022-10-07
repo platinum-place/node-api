@@ -18,7 +18,7 @@ export default async function handler(metro) {
   var data = [];
 
   r.forEach((element) => {
-    if (element.name.includes(metro)) {
+    if (metro.includes(element.name)) {
       data.push({
         name: element.name,
         latitude: element.trackPoint.position.latitude,
