@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSystrackLocations } from "../../../services/systrackService";
+import { getSystrackLocationsById } from "../../../services/systrackService";
+import { validateHeader } from "../../../services/headersService";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,9 +9,14 @@ export default async function handler(
   const {
     query: { id },
     method,
+    headers,
   } = req;
 
-  let data = await getSystrackLocations();
+  if (!validateHeader(headers.user, headers.pass)) {
+    res.status(500).json({ code: 500, message: "Usuario incorrecto" });
+  }
+
+  let data = await getSystrackLocationsById(id);
 
   res.status(200).json(data);
 }
