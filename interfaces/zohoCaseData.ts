@@ -19,4 +19,5 @@ export type zohoCaseData = {
   Suplidor: string;
   Status: string;
   Asistido_por: string;
+  Product_Name: {};
 };

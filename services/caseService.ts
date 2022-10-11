@@ -56,5 +56,6 @@ export const getZohoCase = (zohoData: zohoCaseData) => {
     supplier: zohoData.Suplidor,
     status: zohoData.Status,
     driver: zohoData.Asistido_por,
+    location_id: zohoData.Product_Name["id"],
   };
 };

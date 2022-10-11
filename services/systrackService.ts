@@ -28,10 +28,21 @@ export const getSystrackLocations = async () => {
   return r;
 };
 
-export const getSystrackLocationsById = async (id) => {
+export const getSystrackLocationsById = async (id: number) => {
   let data = await getSystrackLocations();
 
-  return data;
+  var array = [];
+
+  data.forEach((element) => {
+    if (element.username == id) {
+      array.push({
+        latitude: element.trackPoint.position.latitude,
+        longitude: element.trackPoint.position.longitude,
+      });
+    }
+  });
+
+  return array;
 };
 
 export const getSystrackLocationById = (id: string) => {};
