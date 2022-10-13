@@ -1,8 +1,5 @@
-// var user_systrack = process.env.GNB_User;
-// var pass_systrack = process.env.GNB_Pass;
-
-var user_header = "GNB";
-var pass_header = "123";
+var user_header = process.env.GNB_User;
+var pass_header = process.env.GNB_Pass;
 
 export const validateHeader = (
   user: string | string[],
