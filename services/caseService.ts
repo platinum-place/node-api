@@ -1,8 +1,8 @@
 import { caseData } from "../interfaces/caseData";
-import { zohoCaseData } from "../interfaces/zohoCaseData";
+import { zohoCreate, zohoGet } from "./zohoService";
 
-export const setCaseToZoho = (body: caseData) => {
-  return {
+export const createCase = async (body: caseData) => {
+  const caseData = {
     data: [
       {
         Subject: "Asistencia Colonial",
@@ -32,30 +32,53 @@ export const setCaseToZoho = (body: caseData) => {
     ],
     trigger: ["approval", "workflow", "blueprint"],
   };
+  const data = await zohoCreate("Cases", caseData);
+
+  return { id: data[0].details.id };
 };
 
-export const getZohoCase = (zohoData: zohoCaseData) => {
+export const getCase = async (id: string | string[]) => {
+  try {
+    const data = await zohoGet("Cases", id);
+
+    var location_id: string;
+    if (data.data[0].Product_Name) {
+      location_id = data.data[0].Product_Name.id;
+    }
+
+    return {
+      id: data.data[0].id,
+      policy_number: data.data[0].P_liza,
+      vehicle_year: data.data[0].A_o,
+      chassis: data.data[0].Chasis,
+      vehicle_color: data.data[0].Color,
+      vehicle_make: data.data[0].Marca,
+      vehicle_model: data.data[0].Modelo,
+      site_a: data.data[0].Punto_A,
+      site_b: data.data[0].Punto_B,
+      client_name: data.data[0].Solicitante,
+      phone: data.data[0].Phone,
+      policy_plan: data.data[0].Plan,
+      plate: data.Placa,
+      description: data.data[0].Description,
+      location_url: data.data[0].Ubicaci_n,
+      call_center_user: data.data[0].Operador,
+      estimated_time: data.data[0].Tiempo_estimado,
+      supplier: data.data[0].Suplidor,
+      status: data.data[0].Status,
+      driver: data.data[0].Asistido_por,
+      location_id: location_id,
+    };
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getServiceCase = async (id: string) => {
+  const data = await zohoGet("Products", id);
   return {
-    code: zohoData.id,
-    policy_number: zohoData.P_liza,
-    vehicle_year: zohoData.A_o,
-    chassis: zohoData.Chasis,
-    vehicle_color: zohoData.Color,
-    vehicle_make: zohoData.Marca,
-    vehicle_model: zohoData.Modelo,
-    site_a: zohoData.Punto_A,
-    site_b: zohoData.Punto_B,
-    client_name: zohoData.Solicitante,
-    phone: zohoData.Phone,
-    policy_plan: zohoData.Plan,
-    plate: zohoData.Placa,
-    description: zohoData.Description,
-    location_url: zohoData.Ubicaci_n,
-    call_center_user: zohoData.Operador,
-    estimated_time: zohoData.Tiempo_estimado,
-    supplier: zohoData.Suplidor,
-    status: zohoData.Status,
-    driver: zohoData.Asistido_por,
-    location_id: zohoData.Product_Name["id"],
+    code: data.data[0].id,
+    platform: data.data[0].Plataforma_API,
+    token: data.data[0].Clave_API,
   };
 };

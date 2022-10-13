@@ -32,8 +32,8 @@ export const generateZohoAceessToken = async () => {
   return r.access_token;
 };
 
-export const zohoCreate = async (module: string, data: {}) => {
-  let token = await generateZohoAceessToken();
+export const zohoCreate = async (module: string, data: any) => {
+  const token = await generateZohoAceessToken();
 
   const response = await fetch(url_apis + "/" + module, {
     method: "POST",
@@ -49,7 +49,7 @@ export const zohoCreate = async (module: string, data: {}) => {
 };
 
 export const zohoGet = async (module: string, id: string | string[]) => {
-  let token = await generateZohoAceessToken();
+  const token = await generateZohoAceessToken();
 
   const response = await fetch(url_apis + "/" + module + "/" + id, {
     headers: {

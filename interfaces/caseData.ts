@@ -1,5 +1,5 @@
 export type caseData = {
-  vehicle_year: number;
+  vehicle_year: string;
   chassis: string;
   vehicle_color: string;
   vehicle_make: string;

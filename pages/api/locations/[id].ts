@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSystrackLocationsById } from "../../../services/systrackService";
 import { validateHeader } from "../../../services/headersService";
-import { zohoGet } from "../../../services/zohoService";
-import { getZohoCase } from "../../../services/caseService";
+import { getCase, getServiceCase } from "../../../services/caseService";
+import { getSystrackLocationById } from "../../../services/systrackService";
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,32 +14,39 @@ export default async function handler(
   } = req;
 
   if (!validateHeader(headers.user, headers.pass)) {
-    res.status(500).json({ code: 500, message: "Usuario incorrecto" });
+    res.status(400).json({ code: 400, message: "Usuario incorrecto" });
   }
 
-  let zoho = await zohoGet("Cases", id);
+  const data = await getCase(id);
 
-  let data = getZohoCase(zoho.data[0]);
-
-  if (data.status !== "Despachado") {
-    res.status(501).json({ code: 501, message: "Caso en progreso" });
+  if (data == null) {
+    res.status(502).json({ code: 502, message: "Caso no encontrado" });
   }
 
-  let zohoService = await zohoGet("Products", data.location_id);
+  if (
+    data.status == "Medio servicio" ||
+    data.status == "Cancelado" ||
+    data.status == "Contacto" ||
+    data.status == "Cerrado"
+  ) {
+    res.status(501).json({ code: 501, message: "Caso concluido" });
+  }
 
-  let platform = zohoService.data[0].Plataforma_API;
-  let api_key = zohoService.data[0].Clave_API;
-  var location = [];
+  const service = await getServiceCase(data.location_id);
 
-  switch (platform) {
+  var location = { latitude: 0, longitude: 0 };
+  var message = "Caso en progreso";
+
+  switch (service.platform) {
     case "Systrack":
-      location = await getSystrackLocationsById(api_key);
+      location = await getSystrackLocationById(service.token);
+      var message = "Servicio en camino";
       break;
 
     case "Navixy":
-      location = await getSystrackLocationsById(api_key);
+      //location = await getSystrackLocationsById(service.token);
       break;
   }
 
-  res.status(200).json({ id: id, data: location });
+  res.status(200).json({ id: id, message: message, data: location });
 }

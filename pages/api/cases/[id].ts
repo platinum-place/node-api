@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getZohoCase } from "../../../services/caseService";
+import { getCase } from "../../../services/caseService";
 import { validateHeader } from "../../../services/headersService";
-import { zohoGet } from "../../../services/zohoService";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,14 +13,21 @@ export default async function handler(
   } = req;
 
   if (!validateHeader(headers.user, headers.pass)) {
-    res.status(500).json({ code: 500, message: "Usuario incorrecto" });
+    res.status(400).json({ code: 400, message: "Usuario incorrecto" });
   }
 
-  let zoho = await zohoGet("Cases", id);
+  const data = await getCase(id);
 
-  let data = getZohoCase(zoho.data[0]);
+  if (data == null) {
+    res.status(502).json({ code: 502, message: "Caso no encontrado" });
+  }
 
-  if (data.status !== "Despachado") {
+  if (
+    data.status == "Medio servicio" ||
+    data.status == "Cancelado" ||
+    data.status == "Contacto" ||
+    data.status == "Cerrado"
+  ) {
     res.status(501).json({ code: 501, message: "Caso concluido" });
   }
 
