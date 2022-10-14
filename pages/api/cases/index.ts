@@ -18,5 +18,12 @@ export default async function handler(
 
   const zoho = await createCase(body);
 
-  res.status(200).json({ status: 200, id: zoho.id, data: body });
+  res
+    .status(200)
+    .json({
+      code: 200,
+      message: "Caso creado con exito",
+      id: zoho.id,
+      data: body,
+    });
 }

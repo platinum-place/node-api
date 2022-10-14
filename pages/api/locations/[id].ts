@@ -48,5 +48,5 @@ export default async function handler(
       break;
   }
 
-  res.status(200).json({ id: id, message: message, data: location });
+  res.status(200).json({ code: 200, id: id, message: message, data: location });
 }

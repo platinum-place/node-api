@@ -31,5 +31,5 @@ export default async function handler(
     res.status(501).json({ code: 501, message: "Caso concluido" });
   }
 
-  res.status(200).json(data);
+  res.status(200).json({ code: 200, message: "Caso disponible", data: data });
 }
