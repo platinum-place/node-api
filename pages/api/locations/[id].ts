@@ -34,6 +34,10 @@ export default async function handler(
 
   const service = await getServiceCase(data.location_id);
 
+  if (service == null) {
+    res.status(502).json({ code: 504, message: "Caso sin proveedor asignado" });
+  }
+
   var location = { latitude: 0, longitude: 0 };
   var message = "Caso en progreso";
 

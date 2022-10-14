@@ -75,10 +75,14 @@ export const getCase = async (id: string | string[]) => {
 };
 
 export const getServiceCase = async (id: string) => {
-  const data = await zohoGet("Products", id);
-  return {
-    code: data.data[0].id,
-    platform: data.data[0].Plataforma_API,
-    token: data.data[0].Clave_API,
-  };
+  try {
+    const data = await zohoGet("Products", id);
+    return {
+      code: data.data[0].id,
+      platform: data.data[0].Plataforma_API,
+      token: data.data[0].Clave_API,
+    };
+  } catch (error) {
+    return null;
+  }
 };
